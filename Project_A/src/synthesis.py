@@ -97,6 +97,7 @@ def render_diagnostic_figures(
     out = Path(output_dir)
     out.mkdir(parents=True, exist_ok=True)
     saved_paths: list[Path] = []
+    palette_1 = ["#236B77", "#B66B53", "#844438", "#568A98", "#9BA13B", "#319E79"]
 
     # 1. MLP Loss Curves (Raw + Smoothed)
     if histories:
@@ -104,11 +105,11 @@ def render_diagnostic_figures(
         for idx, (label, hist) in enumerate(histories.items()):
             ax = axes[0, idx]
             epochs = np.arange(1, len(hist.train_loss) + 1)
-            ax.plot(epochs, hist.train_loss, alpha=0.25, color="tab:blue", label="Train (raw)")
-            ax.plot(epochs, hist.val_loss, alpha=0.25, color="tab:orange", label="Val (raw)")
-            ax.plot(epochs, hist.smoothed_train_loss, color="tab:blue", lw=2, label="Train (MA)")
-            ax.plot(epochs, hist.smoothed_val_loss, color="tab:orange", lw=2, label="Val (MA)")
-            ax.axvline(hist.stopped_epoch, color="tab:red", ls="--", lw=1.2, label=f"Stop @ {hist.stopped_epoch}")
+            ax.plot(epochs, hist.train_loss, alpha=0.25, color=palette_1[0], label="Train (raw)")
+            ax.plot(epochs, hist.val_loss, alpha=0.25, color=palette_1[1], label="Val (raw)")
+            ax.plot(epochs, hist.smoothed_train_loss, color=palette_1[0], lw=2, label="Train (MA)")
+            ax.plot(epochs, hist.smoothed_val_loss, color=palette_1[1], lw=2, label="Val (MA)")
+            ax.axvline(hist.stopped_epoch, color=palette_1[2], ls="--", lw=1.2, label=f"Stop @ {hist.stopped_epoch}")
             ax.set_title(f"{label} — BCE Loss")
             ax.set_xlabel("Epoch")
             ax.set_ylabel("Binary Cross-Entropy")
@@ -123,8 +124,14 @@ def render_diagnostic_figures(
     # 2. Classification ROC Curves
     if cls_metrics:
         fig, ax = plt.subplots(figsize=(6.5, 5.5))
-        for m in cls_metrics:
-            ax.plot(m.fpr, m.tpr, lw=2, label=f"{m.model_name} (AUC = {m.roc_auc:.3f})")
+        for idx, m in enumerate(cls_metrics):
+            ax.plot(
+                m.fpr,
+                m.tpr,
+                lw=2,
+                color=palette_1[idx % len(palette_1)],
+                label=f"{m.model_name} (AUC = {m.roc_auc:.3f})",
+            )
         ax.plot([0, 1], [0, 1], "k--", lw=1, alpha=0.6, label="Random Baseline")
         ax.set_title("Task 1: Receiver Operating Characteristic (ROC)")
         ax.set_xlabel("False Positive Rate")
@@ -146,7 +153,8 @@ def render_diagnostic_figures(
             for r in range(2):
                 for c in range(2):
                     val = int(m.confusion_matrix[r, c])
-                    ax.text(c, r, str(val), ha="center", va="center", color="black", fontsize=11, fontweight="bold")
+                    txt_color = "white" if val > 90 else "black"
+                    ax.text(c, r, str(val), ha="center", va="center", color=txt_color, fontsize=11, fontweight="bold")
             ax.set_xticks([0, 1])
             ax.set_yticks([0, 1])
             ax.set_xticklabels(["Pred 0", "Pred 1"])
@@ -164,9 +172,10 @@ def render_diagnostic_figures(
         names = [r.model_name for r in reg_metrics]
         rmses = [r.rmse for r in reg_metrics]
         r2s = [r.r2 for r in reg_metrics]
-        colors = ["tab:blue", "tab:green", "tab:purple"]
+        reg_palette = ["#B66B53", "#568A98", "#9BA13B"]
+        colors = [reg_palette[idx % len(reg_palette)] for idx in range(len(names))]
         fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14.5, 4.3))
-        ax1.bar(names, rmses, color=colors[: len(names)])
+        ax1.bar(names, rmses, color=colors)
         ax1.set_title("Task 3: Test RMSE (meters)")
         ax1.set_ylabel("RMSE [m]")
         ax1.tick_params(axis="x", rotation=15)
