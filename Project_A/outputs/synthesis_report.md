@@ -10,6 +10,10 @@
 | RandomForest | 0.34 | 0.99 | 0.9804 | 1.0 | 0.9901 | 1.0 | 0 | 2 |
 | MLP | 0.15 | 0.995 | 0.9901 | 1.0 | 0.995 | 0.9998 | 0 | 1 |
 
+![Task 1 ROC Curves](classification_roc_curves.png)
+
+![Task 1 Confusion Matrices](classification_confusion_matrices.png)
+
 ## 2. Feature Engineering Ablation (Raw Displacements vs. Kinematic Invariants)
 
 | model_name | raw_acc | inv_acc | delta_acc | raw_recall | inv_recall | raw_f1 | inv_f1 | delta_f1 | raw_auc | inv_auc | delta_auc | raw_fn | inv_fn |
@@ -66,9 +70,13 @@
 | RandomForestRegressor | 2.1905e-06 | 0.00148 | 0.999242 |
 | MLPRegressor | 5.9985e-06 | 0.002449 | 0.997923 |
 
+![Task 3 Regression Benchmark & Parity Plot](regression_benchmark.png)
+
 ## 5. Underfitting-Before-Overfitting Diagnostic Verification
 
 | Model | regime | underfit_resolved | min_train_loss | min_val_loss | final_train_loss | final_val_loss | generalization_gap | stopped_epoch |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Invariants_MLP | well_fitted | True | 0.00078 | 0.013944 | 0.00078 | 0.015358 | 0.014577 | 172 |
 | Raw_MLP | well_fitted | True | 0.007719 | 0.007712 | 0.007719 | 0.008203 | 0.000484 | 300 |
+
+![MLP Training and Validation Loss Curves](mlp_loss_curves.png)

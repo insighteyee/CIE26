@@ -280,6 +280,10 @@ def export_synthesis_report(
         "",
         _df_to_markdown(cls_df),
         "",
+        "![Task 1 ROC Curves](classification_roc_curves.png)",
+        "",
+        "![Task 1 Confusion Matrices](classification_confusion_matrices.png)",
+        "",
         "## 2. Feature Engineering Ablation (Raw Displacements vs. Kinematic Invariants)",
         "",
         _df_to_markdown(ablation_df),
@@ -309,6 +313,8 @@ def export_synthesis_report(
             "",
             _df_to_markdown(reg_df),
             "",
+            "![Task 3 Regression Benchmark & Parity Plot](regression_benchmark.png)",
+            "",
         ]
     )
 
@@ -320,6 +326,8 @@ def export_synthesis_report(
                 "## 5. Underfitting-Before-Overfitting Diagnostic Verification",
                 "",
                 _df_to_markdown(diag_df),
+                "",
+                "![MLP Training and Validation Loss Curves](mlp_loss_curves.png)",
                 "",
             ]
         )
